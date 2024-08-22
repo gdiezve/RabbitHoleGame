@@ -6,14 +6,17 @@ public class PlayerShooting : MonoBehaviour
     public Transform bulletSpawn;   // Spawn point for the bullet
     public float bulletSpeed = 15f; // Speed of the bullet
     public float fireRate = 0.5f;   // Time between shots
-
     private float fireTimer;
+    AudioSource audioSoundEffect;
 
+    void Awake() {
+        audioSoundEffect = GetComponent<AudioSource>();
+    }
     void Update()
     {
         fireTimer -= Time.deltaTime;
 
-        // Check if the player presses the fire button (left mouse button or spacebar)
+        // Check if the player presses the fire button (left mouse button)
         if (Input.GetButtonDown("Fire1") && fireTimer <= 0f)
         {
             Shoot();
@@ -35,5 +38,8 @@ public class PlayerShooting : MonoBehaviour
 
         // Destroy the bullet after 2 seconds to prevent memory leaks
         Destroy(bullet, 2f);
+        
+        // Play bullet sound effect
+        audioSoundEffect.Play();
     }
 }

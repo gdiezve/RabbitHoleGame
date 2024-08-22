@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
 
 public class LevelGenerator : MonoBehaviour
 {
@@ -7,12 +8,15 @@ public class LevelGenerator : MonoBehaviour
     public GameObject finishPrefab;         // Prefab for the finish point
     public GameObject wallPrefab;           // Prefab for the wall
     public GameObject playerPrefab;         // Prefab for the player
-    public float minDistanceFromFinish = 2f; // Minimum distance from finish point to avoid obstacles
+    public float minDistanceFromFinish = 3f; // Minimum distance from finish point to avoid obstacles
     public int level = 1;                   // Current level number
-    public GameObject[] collectablePrefabs; // Array of collectable prefabs
     public GameObject winnerMenuUI;
     public GameObject keepTryingMenuUI;
     public GameObject loserMenuUI;
+    public GameObject playerHealthUI;
+    public TextMeshProUGUI playerScoreUIText;
+    public TextMeshProUGUI winnerScoreUIText;
+    public TextMeshProUGUI loserScoreUIText;
 
     private Vector2 finishPoint;
     private Vector2 playerSpawnPoint;
@@ -67,34 +71,18 @@ public class LevelGenerator : MonoBehaviour
         player.GetComponent<PlayerController>().winnerMenuUI = winnerMenuUI;
         player.GetComponent<PlayerController>().keepTryingMenuUI = keepTryingMenuUI;
         player.GetComponent<PlayerController>().loserMenuUI = loserMenuUI;
+        player.GetComponent<PlayerController>().playerHealthUI = playerHealthUI;
+        player.GetComponent<ScoreManager>().playerScoreUIText = playerScoreUIText;
+        player.GetComponent<ScoreManager>().winnerScoreUIText = winnerScoreUIText;
+        player.GetComponent<ScoreManager>().loserScoreUIText = loserScoreUIText; 
 
         // Set the player Transform for the enemy spawner and the camera
         EnemySpawner enemySpawnerScript = FindObjectOfType<EnemySpawner>();
         enemySpawnerScript.player = player.transform;
         TopDownCamera topDownCameraScript = FindObjectOfType<TopDownCamera>();
         topDownCameraScript.player = player.transform;
-
-        // Spawn collectables
-        int totalCollectableTypes = collectablePrefabs.Length;
-
-        for (int i = 0; i < totalCollectableTypes; i++)
-        {
-            for (int j = 0; j < GlobalGameManager.Instance.numberOfCollectablesPerType; j++)
-            {
-                Vector2 collectablePosition = GenerateRandomPosition(halfFieldSize);
-
-                // Ensure collectable is not on an obstacle, wall, or too close to the player/finish
-                if (occupiedPositions.Contains(collectablePosition) || Vector2.Distance(collectablePosition, finishPoint) < 3f)
-                {
-                    j--; // Retry this iteration
-                    continue;
-                }
-
-                // Instantiate the collectable of the current type
-                Instantiate(collectablePrefabs[i], new Vector3(collectablePosition.x, collectablePosition.y, 0), Quaternion.identity);
-                occupiedPositions.Add(collectablePosition);
-            }
-        }
+        MinimapCamera minimapCamera = FindObjectOfType<MinimapCamera>();
+        minimapCamera.player = player;
     }
 
     void GenerateWalls(int halfFieldSize)
@@ -102,7 +90,7 @@ public class LevelGenerator : MonoBehaviour
         for (int x = -halfFieldSize; x <= halfFieldSize; x++)
         {
             // Top wall (y = halfFieldSize)
-            Vector2 topWallPosition = new Vector2(x, halfFieldSize);
+            Vector2 topWallPosition = new(x, halfFieldSize);
             occupiedPositions.Add(topWallPosition);
             Instantiate(wallPrefab, new Vector3(topWallPosition.x, topWallPosition.y, 0), Quaternion.identity);
 
