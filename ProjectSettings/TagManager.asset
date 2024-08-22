@@ -8,6 +8,8 @@ TagManager:
   - Enemy
   - Obstacle
   - WinnerMenu
+  - Add1Modifier
+  - Substract1Modifier
   layers:
   - Default
   - TransparentFX
@@ -15,7 +17,7 @@ TagManager:
   - 
   - Water
   - UI
-  - 
+  - Minimap
   - 
   - 
   - 

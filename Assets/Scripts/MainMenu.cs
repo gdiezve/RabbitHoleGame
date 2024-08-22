@@ -6,11 +6,17 @@ public class MainMenu : MonoBehaviour
 {
     [SerializeField] GameObject coverImage;
     [SerializeField] Button playButton;
+     [SerializeField] Button howToPlayButton;
     [SerializeField] GameObject chooseLevelUI;
+
+    public void HowToPlayButton() {
+        SceneManager.LoadScene("HowToPlayScene");
+    }
 
     public void PlayButton() {
         coverImage.SetActive(false);
         playButton.gameObject.SetActive(false);
+        howToPlayButton.gameObject.SetActive(false);
         chooseLevelUI.SetActive(true);
     }
 
@@ -21,7 +27,6 @@ public class MainMenu : MonoBehaviour
         GlobalGameManager.Instance.fieldSize = 70;
         GlobalGameManager.Instance.obstacleCount = 40;
         GlobalGameManager.Instance.numberOfCollectablesPerType = 3;
-        GlobalGameManager.Instance.enemyMinSpawnRadius = 8f;
         GlobalGameManager.Instance.enemySpawnInterval = 2f;
         GlobalGameManager.Instance.enemySpawnRadius = 10f;
         GlobalGameManager.Instance.randomFinishScale = Random.Range(1, 6);
@@ -35,7 +40,6 @@ public class MainMenu : MonoBehaviour
         GlobalGameManager.Instance.fieldSize = 100;
         GlobalGameManager.Instance.obstacleCount = 80;
         GlobalGameManager.Instance.numberOfCollectablesPerType = 2;
-        GlobalGameManager.Instance.enemyMinSpawnRadius = 5f;
         GlobalGameManager.Instance.enemySpawnInterval = 2f;
         GlobalGameManager.Instance.enemySpawnRadius = 8f;
         GlobalGameManager.Instance.randomFinishScale = Random.Range(1, 10);
