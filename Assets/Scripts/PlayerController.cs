@@ -1,6 +1,6 @@
-using Unity.VisualScripting;
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 public class PlayerController : MonoBehaviour
 {
@@ -9,11 +9,17 @@ public class PlayerController : MonoBehaviour
     public GameObject winnerMenuUI;
     public GameObject keepTryingMenuUI;
     public GameObject loserMenuUI;
+    public GameObject playerHealthUI;
+    public GameObject heartPrefab;
+    public int life = 100;
+    private readonly int maxHealth = 5;
+    private readonly List<GameObject> hearts = new();
 
     void Start()
     {
         originalScale = transform.localScale;
         spriteRenderer = GetComponent<SpriteRenderer>();
+        SetInitialHealth();
     }
     
     void Update()
@@ -79,13 +85,40 @@ public class PlayerController : MonoBehaviour
         transform.rotation = Quaternion.Euler(new Vector3(0, 0, angle));
     }
 
+    void SetInitialHealth() {
+        float spaceBetweenHearts = 50f;
+        float xPosition = -60f;
+        for (int i=0; i<maxHealth; i++) {
+            GameObject newHeart = Instantiate(heartPrefab);
+            hearts.Add(newHeart);
+
+            newHeart.transform.SetParent(playerHealthUI.transform);
+            newHeart.layer = 5;
+
+            newHeart.transform.localPosition = new Vector3(xPosition, 0f, 0f);
+            newHeart.transform.localScale = new Vector3(16f, 16f, 1f);
+            xPosition += spaceBetweenHearts;
+        }
+    }
+
     void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            Debug.Log("Game Over!");
-            Time.timeScale = 0;
-            loserMenuUI.SetActive(true); 
+            life -= 20;
+            GameObject heartToDestroy = hearts.Last();
+            Destroy(heartToDestroy);
+            hearts.Remove(heartToDestroy);
+
+            if (life <= 0) {
+                Debug.Log("Game Over!");
+                // TODO: Display dead animation
+                Time.timeScale = 0;
+                loserMenuUI.SetActive(true); 
+            }
+            // TODO: Display hurt animation and inmune during 2 seconds to allow scaping
+
+            Destroy(collision.gameObject);
         } else if (collision.gameObject.CompareTag("Hole")) {
             CheckWin();
         }
