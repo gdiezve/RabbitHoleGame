@@ -5,20 +5,25 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     private Vector3 originalScale;
-    private SpriteRenderer spriteRenderer;
+    private SpriteRenderer playerSpriteRenderer, bulletSpawnerSpriteRenderer;
+    private Transform bulletSpawnerTransform;
     public GameObject winnerMenuUI;
     public GameObject keepTryingMenuUI;
     public GameObject loserMenuUI;
     public GameObject playerHealthUI;
     public GameObject heartPrefab;
     public int life = 100;
+    public Sprite triangleSprite;
     private readonly int maxHealth = 5;
     private readonly List<GameObject> hearts = new();
+    private readonly Color orangeColor = new(0.96f, 0.49f, 0f, 1); 
 
     void Start()
     {
         originalScale = transform.localScale;
-        spriteRenderer = GetComponent<SpriteRenderer>();
+        playerSpriteRenderer = GetComponent<SpriteRenderer>();
+        bulletSpawnerTransform = playerSpriteRenderer.gameObject.transform.Find("BulletSpawner");
+        bulletSpawnerSpriteRenderer = bulletSpawnerTransform.GetComponent<SpriteRenderer>();
         SetInitialHealth();
     }
     
@@ -47,25 +52,15 @@ public class PlayerController : MonoBehaviour
             transform.localScale += new Vector3(scaleValue, scaleValue, 0);
         }
     }
-
-    public void MultiplyScale(int multiplier)
-    {
-        // Multiply the player's current scale by the given multiplier
-        transform.localScale *= multiplier;
-    }
-
-    public void DivideScale(int divisor)
-    {
-        // Divide the player's current scale by the given divisor
-        transform.localScale /= divisor;
-    }
-
     public void ChangeSprite(Sprite newSprite)
     {
         // Change the player's sprite to the new sprite
-        if (spriteRenderer != null)
+        if (playerSpriteRenderer != null)
         {
-            spriteRenderer.sprite = newSprite;
+            playerSpriteRenderer.sprite = newSprite;
+            playerSpriteRenderer.color = orangeColor;
+            bulletSpawnerSpriteRenderer.color = orangeColor;
+            //bulletSpawnerTransform.position = new Vector3(0.3f, 0.1f, 0); 
         }
     }
 
@@ -105,20 +100,7 @@ public class PlayerController : MonoBehaviour
     {
         if (collision.gameObject.CompareTag("Enemy"))
         {
-            life -= 20;
-            GameObject heartToDestroy = hearts.Last();
-            Destroy(heartToDestroy);
-            hearts.Remove(heartToDestroy);
-
-            if (life <= 0) {
-                Debug.Log("Game Over!");
-                // TODO: Display dead animation
-                Time.timeScale = 0;
-                loserMenuUI.SetActive(true); 
-            }
-            // TODO: Display hurt animation and inmune during 2 seconds to allow scaping
-
-            Destroy(collision.gameObject);
+            CheckEnemy(collision);
         } else if (collision.gameObject.CompareTag("Hole")) {
             CheckWin();
         }
@@ -135,5 +117,28 @@ public class PlayerController : MonoBehaviour
             Time.timeScale = 0;
             keepTryingMenuUI.SetActive(true);
         }
+    }
+
+    void CheckEnemy(Collider2D collision) {
+        Enemy enemy = collision.gameObject.GetComponent<Enemy>();
+        if (enemy.type == Enemy.EnemyType.Triangle) {
+            ChangeSprite(triangleSprite);
+        }
+
+        // Reduce health by destroying a heart
+        life -= 20;
+        GameObject heartToDestroy = hearts.Last();
+        Destroy(heartToDestroy);
+        hearts.Remove(heartToDestroy);
+
+        if (life <= 0) {
+            Debug.Log("Game Over!");
+            // TODO: Display dead animation
+            Time.timeScale = 0;
+            loserMenuUI.SetActive(true); 
+        }
+        // TODO: Display hurt animation and inmune during 2 seconds to allow scaping
+
+        Destroy(collision.gameObject);
     }
 }

@@ -34,6 +34,7 @@ public class MainMenu : MonoBehaviour
         GlobalGameManager.Instance.orthographicSize = 10f;
         GlobalGameManager.Instance.enemySpeed = 5f;
         GlobalGameManager.Instance.playerSpeed = 7f;
+        GlobalGameManager.Instance.triangleEnemyProbability = 0.5;
         SceneManager.LoadScene("GameScene");
     }
     public void HardButton() {
@@ -47,6 +48,7 @@ public class MainMenu : MonoBehaviour
         GlobalGameManager.Instance.orthographicSize = 13f;
         GlobalGameManager.Instance.enemySpeed = 7f;
         GlobalGameManager.Instance.playerSpeed = 10f;
+        GlobalGameManager.Instance.triangleEnemyProbability = 0.8;
         SceneManager.LoadScene("GameScene");
     }
 }

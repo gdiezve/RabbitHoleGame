@@ -4,9 +4,7 @@ public class Collectable : MonoBehaviour
 {
     public enum CollectableType
     {
-        AddScale,       // Adds a value to the player's scale
-        MultiplyScale,  // Multiplies the player's scale by a factor
-        DivideScale,    // Divides the player's scale by a factor
+        ChangeScale,       // Adds a value to the player's scale
         ChangeSprite    // Changes the player's sprite
     }
 
@@ -30,14 +28,8 @@ public class Collectable : MonoBehaviour
     {
         switch (type)
         {
-            case CollectableType.AddScale:
+            case CollectableType.ChangeScale:
                 player.ChangeScale(value);
-                break;
-            case CollectableType.MultiplyScale:
-                player.MultiplyScale(value);
-                break;
-            case CollectableType.DivideScale:
-                player.DivideScale(value);
                 break;
             case CollectableType.ChangeSprite:
                 player.ChangeSprite(newSprite);

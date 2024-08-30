@@ -2,8 +2,14 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    public Transform player; // Reference to the player's transform
+    public enum EnemyType
+    {
+        Circle,       // Adds a value to the player's scale
+        Triangle    // Changes the player's sprite
+    }
     
+    public Transform player; // Reference to the player's transform
+    public EnemyType type;
 
     void Update()
     {
