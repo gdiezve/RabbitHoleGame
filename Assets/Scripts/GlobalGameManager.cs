@@ -16,6 +16,7 @@ public class GlobalGameManager : MonoBehaviour
     public float playerSpeed = 5f; // Speed of the character movement
     public int randomPlayerScale;
     public int randomFinishScale;
+    public double triangleEnemyProbability = 1.0;
 
     void Awake()
     {

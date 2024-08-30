@@ -391,6 +391,7 @@ MonoBehaviour:
   playerHealthUI: {fileID: 0}
   heartPrefab: {fileID: 7323520457116483059, guid: 22583b3d6b1b543859b1c58bdb702bdf, type: 3}
   life: 100
+  triangleSprite: {fileID: 7482667652216324306, guid: 75f5f34dc1b5347e0b8351032682f224, type: 3}
 --- !u!61 &3717114007392371926
 BoxCollider2D:
   m_ObjectHideFlags: 0

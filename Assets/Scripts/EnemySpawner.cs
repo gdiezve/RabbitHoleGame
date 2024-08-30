@@ -1,8 +1,9 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class EnemySpawner : MonoBehaviour
 {
-    public GameObject enemyPrefab; // The enemy prefab to spawn
+    public GameObject[] enemyPrefabs; // The enemy prefab to spawn
     public Transform player; // Reference to the player's transform
     private float spawnTimer;
 
@@ -29,6 +30,7 @@ public class EnemySpawner : MonoBehaviour
         spawnPosition.z = 0f; // Keep the enemy on the same plane as the player
 
         // Spawn the enemy and set its target to the player
+        GameObject enemyPrefab = GetRandomEnemy();
         GameObject newEnemy = Instantiate(enemyPrefab, spawnPosition, Quaternion.identity);
         Enemy enemyScript = newEnemy.GetComponent<Enemy>();
         enemyScript.player = player;
@@ -55,5 +57,17 @@ public class EnemySpawner : MonoBehaviour
         float clampedY = Mathf.Clamp(potentialSpawnPosition.y, yMin, yMax);
 
         return new Vector2(clampedX, clampedY);
+    }
+
+    GameObject GetRandomEnemy() {
+        // Gets a random enemy based on probability, which changes by level
+        System.Random random = new();
+        if(random.NextDouble() > GlobalGameManager.Instance.triangleEnemyProbability) {
+            Debug.Log(GlobalGameManager.Instance.triangleEnemyProbability);
+            Debug.Log("Circle enemy spawn");
+            return enemyPrefabs[0];
+        }
+        Debug.Log("Triangle enemy spawn");
+        return enemyPrefabs[1];
     }
 }
